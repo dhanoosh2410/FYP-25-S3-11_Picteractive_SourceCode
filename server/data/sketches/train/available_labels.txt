@@ -1,0 +1,95 @@
+airplane
+angry face
+bag
+ball
+beach
+bear
+bed
+bee
+bench
+bicycle
+bird
+boat
+book
+boots
+bottle
+bridge
+building
+bus
+butterfly
+camera
+campfire
+car
+cat
+chair
+church
+city
+cloud
+computer
+cow
+crying face
+cup
+day
+dog
+door
+dragon
+duck
+elephant
+face
+fan
+farm
+fish
+flower
+forest
+garden
+glasses
+grass
+hat
+hill
+horse
+house
+lake
+leaf
+lightning
+lion
+moon
+mountain
+night
+ocean
+park
+penguin
+person
+phone
+playground
+rabbit
+radio
+rain
+rainbow
+river
+road
+sad face
+school
+sea
+shoe
+smiley face
+snake
+snowflake
+star
+stick figure
+stick man
+stop sign
+storm
+sun
+sunrise
+sunset
+surprised face
+table
+television
+tornado
+traffic light
+train
+tree
+truck
+t-shirt
+turtle
+umbrella

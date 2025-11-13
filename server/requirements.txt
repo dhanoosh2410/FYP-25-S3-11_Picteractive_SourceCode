@@ -1,0 +1,32 @@
+fastapi>=0.110,<1
+uvicorn[standard]>=0.22,<1
+pillow>=10,<12
+python-dotenv>=1.0,<2
+pyttsx3>=2.90,<3
+nltk>=3.8,<4
+pywin32; platform_system == "Windows"
+python-multipart>=0.0.9,<1
+
+# Offline image captioning (BLIP base)
+transformers>=4.41,<5
+timm>=0.9,<1.1
+accelerate>=0.27,<1
+safetensors>=0.4,<1
+torch>=2.2
+colorspacious>=1.1,<2
+
+# Auth + DB
+SQLAlchemy>=2.0,<3
+psycopg2-binary>=2.9,<3
+#python-jose[cryptography]>=3.3,<4
+#passlib[bcrypt]>=1.7,<2
+open_clip_torch>=2.24.0
+
+# Translation (for What’s This page)
+deep-translator>=1.11,<2
+
+# Networking floor to avoid old transitive deps
+httpx>=0.27,<1
+
+# Optional object detection (YOLOv8n); falls back to DETR if unavailable
+ultralytics>=8.0,<9
