@@ -441,21 +441,72 @@ def update_settings(payload: dict, request: Request, db: Session = Depends(get_d
     return {"ok": True, "settings": user.settings}
 
 # ---- Profile actions (new) ----
-@app.post("/api/account/change_email")
-def change_email(payload: dict, request: Request, db: Session = Depends(get_db)):
+@app.post("/api/account/change_display_name")
+def change_display_name(payload: dict, request: Request, db: Session = Depends(get_db)):
+    """
+    Update the user's display name (username).
+    The front-end treats display name as the login username, so we
+    enforce non-empty, reasonably short names and uniqueness.
+    """
     user = current_user_from_cookie(request, db)
     if not user:
         raise HTTPException(status_code=401, detail="Unauthorized")
 
-    new_email = (payload.get("new_email") or "").strip().lower()
+    new_name = (payload.get("display_name") or "").strip()
+    if not new_name:
+        raise HTTPException(status_code=400, detail="Display name cannot be empty")
+    if len(new_name) < 3:
+        raise HTTPException(status_code=400, detail="Display name must be at least 3 characters")
+    if len(new_name) > 50:
+        raise HTTPException(status_code=400, detail="Display name is too long")
+
+    # Ensure no other user already has this username
+    existing = db.query(User).filter(User.username == new_name).first()
+    if existing and existing.id != user.id:
+        raise HTTPException(status_code=400, detail="That display name is already taken")
+
+    user.username = new_name
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return {"ok": True, "username": user.username}
+
+
+@app.post("/api/account/change_email")
+def change_email(payload: dict, request: Request, db: Session = Depends(get_db)):
+    """
+    Change the email address for the current user.
+
+    The client currently sends { email: ... } while this endpoint
+    originally expected { new_email: ... }, so we accept both keys
+    for robustness.
+    """
+    user = current_user_from_cookie(request, db)
+    if not user:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    new_email = (
+        payload.get("new_email")
+        or payload.get("email")
+        or ""
+    )
+    new_email = new_email.strip().lower()
     if not gmail_like(new_email):
         raise HTTPException(status_code=400, detail="Please enter a valid Gmail address (e.g., name@gmail.com)")
 
-    if db.query(User).filter(User.email == new_email).first():
+    # If the email is unchanged, treat as a no-op success
+    if new_email == user.email:
+        return {"ok": True, "email": user.email}
+
+    # Enforce uniqueness across users
+    existing = db.query(User).filter(User.email == new_email).first()
+    if existing and existing.id != user.id:
         raise HTTPException(status_code=400, detail="Email already exists")
 
     user.email = new_email
-    db.add(user); db.commit(); db.refresh(user)
+    db.add(user)
+    db.commit()
+    db.refresh(user)
     return {"ok": True, "email": user.email}
 
 @app.post("/api/account/change_password")
@@ -507,11 +558,20 @@ def delete_account(payload: dict, request: Request, response: Response, db: Sess
     if user.password != pw:
         raise HTTPException(status_code=403, detail="Incorrect password")
 
-    db.delete(user); db.commit()
+    db.delete(user)
+    db.commit()
 
+    # Also invalidate the current session, mirroring logout behaviour
     sid = request.cookies.get("session_id")
-    if sid in sessions:
-        del sessions[sid]
+    if sid:
+        row = db.query(SessionRow).filter(SessionRow.id == sid).first()
+        if row:
+            try:
+                db.delete(row)
+                db.commit()
+            except Exception:
+                db.rollback()
+
     response.delete_cookie("session_id", path="/")
 
     return {"ok": True}

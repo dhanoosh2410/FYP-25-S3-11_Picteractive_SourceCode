@@ -1049,6 +1049,13 @@ async def caption(
     _cap = (best_sentence or best_paragraph or "").strip()
     if _cap and not re.search(r"[\.!?]$", _cap):
         _cap += "."
+        # Universal prefix enforcement
+    if _cap:
+        if not _cap.lower().startswith("the image shows"):
+            _cap = re.sub(r"^(in the picture[, ]*)", "The image shows ", _cap, flags=re.I)
+            if not _cap.lower().startswith("the image shows"):
+                _cap = "The image shows " + _cap
+
     return {
         "caption": _cap,
         "labels": labels,

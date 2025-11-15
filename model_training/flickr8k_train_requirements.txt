@@ -1,0 +1,18 @@
+# Requirements for flickr8k_train_caption_model.py
+# Used for: CNN+LSTM training on Flickr8k + BLEU + accuracy graph
+
+# Core deep learning
+torch>=2.2
+torchvision>=0.17,<1
+
+# Text processing (tokenisation + BLEU)
+nltk>=3.8,<4
+
+# Image loading
+pillow>=10,<12
+
+# Plotting training & validation loss + BLEU curves
+matplotlib>=3.7,<4
+
+# For caption_editor.py interface
+gradio>=4.0,<5
