@@ -4,12 +4,19 @@ Team: FYP-25-S3-11
 
 Picteractive –  run instructions (client/server split)
 
+NOTE: 
+-"Take a photo" feature on "What's this" page works only if permission for camera is given. (Works on chrome)
+-First boot takes longer to install requirements
+-All features work but might take longer to process 
+-Ensure to run the project from the correct folder before running the commands. Refer to the file structure end of this text.
+-Make sure the packages from requirement.txt are installed correctly.
+
 1) Terminal 1 – API (backend)
 
 #From the repo root, create and activate a virtual environment (Python 3.10+):
 '''
 py -3.13 -m venv .venv
-..venv\Scripts\Activate.ps1
+.\.venv\Scripts\Activate.ps1
 python -m pip install -U pip
 pip install -r server\requirements.txt
 
@@ -45,9 +52,6 @@ API health check: open http://localhost:8000/api/health
 (terminal 2)
 Frontend: open http://localhost:5173  in your browser.
 
-
-
-NOTE: "Take a photo" feature on "What's this" page works only if permission for camera is given. (Works on chrome)
 
 
 
